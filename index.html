@@ -2669,7 +2669,7 @@
             if (uiElements.themeToggleButtonMobile) uiElements.themeToggleButtonMobile.addEventListener('click', toggleTheme);
         }
 
-                /* Marcador: Funções do Chatbot Sinais de Alerta */
+        /* Marcador: Funções do Chatbot Sinais de Alerta */
         let warningChatHistory = []; 
         const SINAIS_DE_ALERTA_TEXTO = `
             "Olá! Sou uma assistente virtual com a persona de uma psicóloga experiente, especializada em ajudar a identificar sinais de alerta em relacionamentos que podem ser abusivos. Meu papel é te escutar com empatia e atenção, e te ajudar a refletir sobre sua situação, comparando o que você me contar EXCLUSIVAMENTE com a lista de comportamentos que tenho registrada.
@@ -2876,97 +2876,6 @@
             }
         }
 
-
-        /* Marcador: Funções do Chat da Comunidade */
-
-        /**
-         * Configura os event listeners para o chat da comunidade.
-         */
-        function setupCommunityChat() {
-            if (uiElements.sendCommunityChatMessageButton) {
-                uiElements.sendCommunityChatMessageButton.addEventListener('click', handleSendCommunityChatMessage);
-            }
-            if (uiElements.communityChatInput) {
-                uiElements.communityChatInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) { 
-                        e.preventDefault(); 
-                        handleSendCommunityChatMessage();
-                    }
-                });
-            }
-        }
-
-        /**
-         * Manipula o envio de uma mensagem no chat da comunidade.
-         */
-        async function handleSendCommunityChatMessage() {
-            if (!currentUserId || !currentUserEmail) { 
-                showMessage("Você precisa estar logada para enviar mensagens.", true); return;
-            }
-            const messageText = uiElements.communityChatInput.value.trim();
-            if (messageText === "") return; 
-
-            let usernameForChat = getUserDisplayNameForChat(currentUserEmail); 
-            try { 
-                const displayNameRef = ref(db, `users/${currentUserId}/profile/displayName`);
-                const snapshot = await get(displayNameRef);
-                if (snapshot.exists() && snapshot.val().trim() !== "") {
-                    usernameForChat = snapshot.val().trim();
-                }
-            } catch (error) {
-                console.warn("Não foi possível buscar nome de exibição para o chat, usando e-mail.", error);
-            }
-            
-            const messageData = {
-                userId: currentUserId,
-                username: usernameForChat,
-                text: messageText,
-                timestamp: new Date().toISOString() 
-            };
-
-            try {
-                const newMessageRef = push(communityChatMessagesRef); 
-                await set(newMessageRef, messageData); 
-                uiElements.communityChatInput.value = ""; 
-            } catch (error) {
-                console.error("Erro ao enviar mensagem no chat da comunidade:", error);
-                showMessage("Erro ao enviar mensagem. Tente novamente.", true);
-            }
-        }
-
-        /**
-         * Exibe uma mensagem individual no chat da comunidade.
-         */
-        function displayCommunityChatMessage(messageData, messageId) {
-            if (!uiElements.communityChatMessagesArea) return;
-            if (document.getElementById(messageId)) return; 
-
-            const messageItem = document.createElement('div'); 
-            messageItem.id = messageId; 
-            messageItem.classList.add('community-chat-message-item');
-            messageItem.classList.toggle('sent', messageData.userId === currentUserId);
-            messageItem.classList.toggle('received', messageData.userId !== currentUserId);
-
-            const metaDiv = document.createElement('div');
-            metaDiv.classList.add('message-meta');
-            const senderNameSpan = document.createElement('span');
-            senderNameSpan.classList.add('sender-name');
-            senderNameSpan.textContent = messageData.username || 'Anônima'; 
-            const timestampSpan = document.createElement('span');
-            timestampSpan.classList.add('message-timestamp');
-            timestampSpan.textContent = getFormattedTimestamp(messageData.timestamp); 
-            metaDiv.appendChild(senderNameSpan);
-            metaDiv.appendChild(timestampSpan);
-
-            const textContentDiv = document.createElement('div');
-            textContentDiv.classList.add('message-text-content');
-            textContentDiv.textContent = messageData.text; 
-            
-            messageItem.appendChild(metaDiv);
-            messageItem.appendChild(textContentDiv);
-            uiElements.communityChatMessagesArea.appendChild(messageItem); 
-            uiElements.communityChatMessagesArea.scrollTop = uiElements.communityChatMessagesArea.scrollHeight;
-        }
         
         /**
          * Carrega as mensagens do chat da comunidade.
