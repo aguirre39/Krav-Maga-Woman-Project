@@ -2953,12 +2953,19 @@
                     const deamQuery = `https://www.google.com/maps/search/?api=1&query=delegacia+da+mulher+perto+de+${latitude},${longitude}`;
                     const cramQuery = `https://www.google.com/maps/search/?api=1&query=centro+de+referencia+da+mulher+perto+de+${latitude},${longitude}`;
                     
-                    window.open(deamQuery, '_blank');
-                    window.open(cramQuery, '_blank');
+                    let deamWindow = window.open(deamQuery, '_blank');
+                    let cramWindow = window.open(cramQuery, '_blank');
                     hideLoader();
-                    showMessage("Abrindo o mapa para encontrar Delegacias da Mulher (DEAMs) e Centros de Referência próximos a você.");
 
-                }, () => {
+                    if (!deamWindow || deamWindow.closed || typeof deamWindow.closed == 'undefined' || 
+                        !cramWindow || cramWindow.closed || typeof cramWindow.closed == 'undefined') {
+                        // Attempt to inform about pop-up blockers
+                        showMessage("Tentamos abrir os mapas de ajuda, mas parece que seu navegador bloqueou as janelas pop-up. Por favor, verifique as configurações do seu navegador e tente novamente. As buscas são: 'delegacia da mulher perto de mim' e 'centro de referencia da mulher perto de mim'.", true);
+                    } else {
+                        showMessage("Abrindo o mapa para encontrar Delegacias da Mulher (DEAMs) e Centros de Referência próximos a você.");
+                    }
+
+                }, () => { // Error callback for getCurrentPosition
                     hideLoader();
                     showMessage("Não foi possível obter sua localização. Verifique as permissões do seu navegador e tente novamente.", true);
                 }, { timeout: 10000, enableHighAccuracy: true });
@@ -2990,13 +2997,95 @@
             setupNotesEventListeners();
             setupEmergencyButton();
             setupTheme();
-            setupCommunityChat(); 
+            // setupCommunityChat(); // This function was not defined, assuming it's part of a larger context or a typo. If needed, define it.
             setupDisplayNamePrompt(); 
             setupSupportPageEventListeners(); 
+
+            // Initialize community chat if elements exist
+            if (uiElements.communityChatInput && uiElements.sendCommunityChatMessageButton) {
+                uiElements.sendCommunityChatMessageButton.addEventListener('click', handleSendCommunityChatMessage);
+                uiElements.communityChatInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') handleSendCommunityChatMessage();
+                });
+            }
         }
 
+        // Example: Define handleSendCommunityChatMessage and displayCommunityChatMessage if they were intended
+        async function handleSendCommunityChatMessage() {
+            if (!currentUserId || !uiElements.communityChatInput || !currentUserEmail) {
+                showMessage("Você precisa estar logado para enviar mensagens.", true);
+                return;
+            }
+            const messageText = uiElements.communityChatInput.value.trim();
+            if (messageText === "") return;
+
+            let displayName = getUserDisplayNameForChat(currentUserEmail); 
+            try {
+                const nameSnapshot = await get(ref(db, `users/${currentUserId}/profile/displayName`));
+                if (nameSnapshot.exists() && nameSnapshot.val().trim() !== "") {
+                    displayName = nameSnapshot.val().trim();
+                }
+            } catch(e) { console.warn("Could not fetch display name for chat, using default."); }
+
+
+            const messageData = {
+                userId: currentUserId,
+                userEmail: currentUserEmail, 
+                displayName: displayName,
+                text: messageText,
+                timestamp: new Date().toISOString()
+            };
+
+            try {
+                const newMessageRef = push(communityChatMessagesRef);
+                await set(newMessageRef, messageData);
+                uiElements.communityChatInput.value = ""; 
+            } catch (error) {
+                console.error("Erro ao enviar mensagem no chat da comunidade:", error);
+                showMessage("Erro ao enviar mensagem. Tente novamente.", true);
+            }
+        }
+
+        function displayCommunityChatMessage(messageData, messageId) {
+            if (!uiElements.communityChatMessagesArea || !messageData) return;
+
+            const messageItem = document.createElement('div');
+            messageItem.classList.add('community-chat-message-item');
+            messageItem.dataset.messageId = messageId; 
+
+            const isSentMessage = messageData.userId === currentUserId;
+            messageItem.classList.add(isSentMessage ? 'sent' : 'received');
+
+            const messageMeta = document.createElement('div');
+            messageMeta.classList.add('message-meta');
+            
+            const senderNameSpan = document.createElement('span');
+            senderNameSpan.classList.add('sender-name');
+            senderNameSpan.textContent = isSentMessage ? "Você" : (messageData.displayName || getUserDisplayNameForChat(messageData.userEmail));
+
+            const timestampSpan = document.createElement('span');
+            timestampSpan.classList.add('message-timestamp');
+            timestampSpan.textContent = getFormattedTimestamp(messageData.timestamp);
+
+            messageMeta.appendChild(senderNameSpan);
+            messageMeta.appendChild(timestampSpan);
+
+            const messageTextContent = document.createElement('div');
+            messageTextContent.classList.add('message-text-content');
+            messageTextContent.textContent = messageData.text;
+
+            messageItem.appendChild(messageMeta);
+            messageItem.appendChild(messageTextContent);
+            
+            const placeholder = uiElements.communityChatMessagesArea.querySelector('p.text-muted-light');
+            if (placeholder) placeholder.remove();
+
+            uiElements.communityChatMessagesArea.appendChild(messageItem);
+            uiElements.communityChatMessagesArea.scrollTop = uiElements.communityChatMessagesArea.scrollHeight;
+        }
+
+
         document.addEventListener('DOMContentLoaded', () => {
-            uiElements.findSupportNearMeButton = document.getElementById('findSupportNearMeButton');
             initializeAppLogic(); 
             
             const currentActivePage = Array.from(pageSections).find(s => s.classList.contains('active'));
