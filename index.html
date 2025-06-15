@@ -2669,196 +2669,213 @@
             if (uiElements.themeToggleButtonMobile) uiElements.themeToggleButtonMobile.addEventListener('click', toggleTheme);
         }
 
-        /* Marcador: Funções do Chatbot Sinais de Alerta */
-        let warningChatHistory = []; 
-        const SINAIS_DE_ALERTA_TEXTO = `
-            "Olá! Sou uma assistente virtual com a persona de uma psicóloga experiente, especializada em ajudar a identificar sinais de alerta em relacionamentos que podem ser abusivos. Meu papel é te escutar com empatia e atenção, e te ajudar a refletir sobre sua situação, comparando o que você me contar EXCLUSIVAMENTE com a lista de comportamentos que tenho registrada.
+                /* Marcador: Funções do Chatbot Sinais de Alerta */
+        let warningChatHistory = []; 
+        const SINAIS_DE_ALERTA_TEXTO = `
+            "Olá! Sou uma assistente virtual com a persona de uma psicóloga experiente, especializada em ajudar a identificar sinais de alerta em relacionamentos que podem ser abusivos. Meu papel é te escutar com empatia e atenção, e te ajudar a refletir sobre sua situação, comparando o que você me contar EXCLUSIVAMENTE com a lista de comportamentos que tenho registrada.
 
-            É muito importante que você saiba: eu não posso oferecer diagnósticos definitivos nem aconselhamento legal. Minha função é apenas analisar o que você descrever e indicar se algum dos sinais de alerta abaixo parece estar presente em seu relato. Quero que você se sinta em um espaço seguro e acolhedor para compartilhar.
+            É muito importante que você saiba: eu não posso oferecer diagnósticos definitivos nem aconselhamento legal. Minha função é apenas analisar o que você descrever e indicar se algum dos sinais de alerta abaixo parece estar presente em seu relato. Quero que você se sinta em um espaço seguro e acolhedor para compartilhar.
 
-            Lembre-se, a linguagem que usarei será sempre clara e acessível.
+            Lembre-se, a linguagem que usarei será sempre clara e acessível.
 
-            Se você me contar algo que não se encaixe diretamente nos sinais que conheço, direi que, com base nas informações que você compartilhou, não parece corresponder aos comportamentos específicos que fui programada para identificar. No entanto, é fundamental que você sempre confie nos seus sentimentos e na sua intuição. Se algo não parece certo para você, ou se você se sente insegura ou infeliz, procurar apoio de um profissional de psicologia é sempre uma decisão válida e importante.
+            Se você me contar algo que não se encaixe diretamente nos sinais que conheço, direi que, com base nas informações que você compartilhou, não parece corresponder aos comportamentos específicos que fui programada para identificar. No entanto, é fundamental que você sempre confie nos seus sentimentos e na sua intuição. Se algo não parece certo para você, ou se você se sente insegura ou infeliz, procurar apoio de um profissional de psicologia é sempre uma decisão válida e importante.
 
-            Ao final de nossa conversa, se identificarmos algum sinal da lista, reforçarei a importância de buscar ajuda especializada para uma avaliação completa e suporte adequado. Caso não identifiquemos sinais da lista, ainda assim, sugiro que você continue atenta aos seus sentimentos e confie na sua percepção.
+            Ao final de nossa conversa, se identificarmos algum sinal da lista, reforçarei a importância de buscar ajuda especializada para uma avaliação completa e suporte adequado. Caso não identifiquemos sinais da lista, ainda assim, sugiro que você continue atenta aos seus sentimentos e confie na sua percepção.
 
-            Vamos aos sinais de alerta que posso ajudar a identificar:
+            Vamos aos sinais de alerta que posso ajudar a identificar:
 
-            Sinais de Alerta em Relacionamentos:
+            Sinais de Alerta em Relacionamentos:
 
-            Controle Excessivo:
+            Controle Excessivo:
 
-            Tenta controlar suas roupas, amizades, finanças, para onde você vai, com quem você fala.
-            Exige senhas de redes sociais, celular ou e-mail.
-            Monitora suas atividades online ou offline, querendo saber seus horários e localização constantemente.
-            Isolamento Progressivo:
+            Tenta controlar suas roupas, amizades, finanças, para onde você vai, com quem você fala.
+            Exige senhas de redes sociais, celular ou e-mail.
+            Monitora suas atividades online ou offline, querendo saber seus horários e localização constantemente.
+            Isolamento Progressivo:
 
-            Afasta você de amigos, colegas e familiares, criticando essas relações.
-            Cria conflitos ou desconforto para que você se afaste de sua rede de apoio.
-            Faz você se sentir culpada por querer passar tempo com outras pessoas.
-            Ciúme Patológico e Possessividade:
+            Afasta você de amigos, colegas e familiares, criticando essas relações.
+            Cria conflitos ou desconforto para que você se afaste de sua rede de apoio.
+            Faz você se sentir culpada por querer passar tempo com outras pessoas.
+            Ciúme Patológico e Possessividade:
 
-            Demonstra ciúme desproporcional e frequente, muitas vezes sem motivo real.
-            Faz acusações infundadas de traição ou flerte.
-            Tenta controlar suas interações sociais, demonstrando desconfiança excessiva.
-            Críticas Constantes e Desvalorização Sistemática:
+            Demonstra ciúme desproporcional e frequente, muitas vezes sem motivo real.
+            Faz acusações infundadas de traição ou flerte.
+            Tenta controlar suas interações sociais, demonstrando desconfiança excessiva.
+            Críticas Constantes e Desvalorização Sistemática:
 
-            Faz humilhações, seja em particular ou em público.
-            Desvaloriza suas opiniões, aparência, inteligência, sentimentos ou conquistas.
-            Faz você se sentir inadequada, inferior ou constantemente culpada.
-            Usa sarcasmo ou "brincadeiras" para te diminuir.
-            Manipulação Emocional (Gaslighting):
+            Faz humilhações, seja em particular ou em público.
+            Desvaloriza suas opiniões, aparência, inteligência, sentimentos ou conquistas.
+            Faz você se sentir inadequada, inferior ou constantemente culpada.
+            Usa sarcasmo ou "brincadeiras" para te diminuir.
+            Manipulação Emocional (Gaslighting):
 
-            Distorce a realidade para fazer você duvidar de sua própria sanidade, memória ou percepção dos fatos.
-            Nega eventos que aconteceram ("Isso nunca aconteceu", "Você está imaginando coisas") ou inventa situações.
-            Faz você questionar sua própria capacidade de julgamento.
-            Explosões de Raiva e Intimidação:
+            Distorce a realidade para fazer você duvidar de sua própria sanidade, memória ou percepção dos fatos.
+            Nega eventos que aconteceram ("Isso nunca aconteceu", "Você está imaginando coisas") ou inventa situações.
+            Faz você questionar sua própria capacidade de julgamento.
+            Explosões de Raiva e Intimidação:
 
-            Apresenta mudanças repentinas e intensas de humor, passando da calma para a fúria.
-            Grita, xinga, usa palavras ofensivas ou depreciativas.
-            Quebra objetos, bate em portas ou paredes, ou faz gestos agressivos para te intimidar.
-            Usa olhares intimidadores, silêncio punitivo ou ameaças veladas ou diretas (contra você, seus filhos, animais de estimação, ou pessoas queridas).
-            Responsabilização da Vítima (Blaming):
+            Apresenta mudanças repentinas e intensas de humor, passando da calma para a fúria.
+            Grita, xinga, usa palavras ofensivas ou depreciativas.
+            Quebra objetos, bate em portas ou paredes, ou faz gestos agressivos para te intimidar.
+            Usa olhares intimidadores, silêncio punitivo ou ameaças veladas ou diretas (contra você, seus filhos, animais de estimação, ou pessoas queridas).
+            Responsabilização da Vítima (Blaming):
 
-            Culpa você pelos problemas do relacionamento ou pelo próprio comportamento abusivo.
-            Usa frases como: "Você me provocou", "Se você não fizesse X, eu não precisaria fazer Y", "Você me tira do sério".
-            Faz você sentir que é responsável pelas reações negativas dele(a).
-            Pressão ou Coerção Sexual:
+            Culpa você pelos problemas do relacionamento ou pelo próprio comportamento abusivo.
+            Usa frases como: "Você me provocou", "Se você não fizesse X, eu não precisaria fazer Y", "Você me tira do sério".
+            Faz você sentir que é responsável pelas reações negativas dele(a).
+            Pressão ou Coerção Sexual:
 
-            Ignora seus desejos, sentimentos e limites em relação à intimidade.
-            Pressiona, insiste, manipula ou força você a atos sexuais contra sua vontade ou quando você não está confortável.
-            Faz você se sentir culpada ou inadequada por não querer sexo.
-            Controle Financeiro:
+            Ignora seus desejos, sentimentos e limites em relação à intimidade.
+            Pressiona, insiste, manipula ou força você a atos sexuais contra sua vontade ou quando você não está confortável.
+            Faz você se sentir culpada ou inadequada por não querer sexo.
+            Controle Financeiro:
 
-            Impede você de trabalhar ou estudar.
-            Controla todo o dinheiro, mesmo o que você ganha, exigindo que você peça permissão ou justifique gastos.
-            Cria dívidas em seu nome ou se apropria dos seus bens.
-            Usa o dinheiro como forma de poder ou punição.
-            Ameaças (explícitas ou implícitas):
+            Impede você de trabalhar ou estudar.
+            Controla todo o dinheiro, mesmo o que você ganha, exigindo que você peça permissão ou justifique gastos.
+            Cria dívidas em seu nome ou se apropria dos seus bens.
+            Usa o dinheiro como forma de poder ou punição.
+            Ameaças (explícitas ou implícitas):
 
-            Ameaça te machucar fisicamente, te abandonar, se suicidar, ou tirar seus filhos.
-            Ameaça expor segredos seus, te prejudicar no trabalho ou socialmente.
-            Ameaça machucar pessoas queridas ou animais de estimação.
-            Ciclo de Abuso (Tensão, Explosão, Lua de Mel):
+            Ameaça te machucar fisicamente, te abandonar, se suicidar, ou tirar seus filhos.
+            Ameaça expor segredos seus, te prejudicar no trabalho ou socialmente.
+            Ameaça machucar pessoas queridas ou animais de estimação.
+            Ciclo de Abuso (Tensão, Explosão, Lua de Mel):
 
-            O relacionamento passa por fases: um aumento da tensão, uma explosão (abuso verbal, emocional, físico), seguida por um período de "lua de mel" com desculpas, promessas de mudança e comportamento carinhoso, apenas para o ciclo recomeçar.
-            Essa fase de "lua de mel" pode te confundir e te dar esperanças de que as coisas vão melhorar.
-            Invasão de Privacidade e Stalking:
+            O relacionamento passa por fases: um aumento da tensão, uma explosão (abuso verbal, emocional, físico), seguida por um período de "lua de mel" com desculpas, promessas de mudança e comportamento carinhoso, apenas para o ciclo recomeçar.
+            Essa fase de "lua de mel" pode te confundir e te dar esperanças de que as coisas vão melhorar.
+            Invasão de Privacidade e Stalking:
 
-            Mexe em seus pertences pessoais, lê suas mensagens, e-mails ou diário sem permissão.
-            Segue você, aparece em lugares inesperados, ou monitora seus movimentos de forma obsessiva, mesmo que virtualmente.
-        `;
+            Mexe em seus pertences pessoais, lê suas mensagens, e-mails ou diário sem permissão.
+            Segue você, aparece em lugares inesperados, ou monitora seus movimentos de forma obsessiva, mesmo que virtualmente.
+        `;
 
-        /**
-         * Inicializa o chatbot de Sinais de Alerta.
-         */
-        function initializeWarningChatbot() {
-            if (!uiElements.chatMessagesWarning || !uiElements.chatInputWarning || !uiElements.sendWarningChatButton || !uiElements.chatbotPostInteractionLinks) {
-                console.warn("Elementos do chatbot de Sinais de Alerta não encontrados."); return;
-            }
-            uiElements.chatMessagesWarning.innerHTML = ''; 
-            warningChatHistory = []; 
-            uiElements.chatbotPostInteractionLinks.style.display = 'none'; 
+        /**
+         * Inicializa o chatbot de Sinais de Alerta.
+         */
+        function initializeWarningChatbot() {
+            if (!uiElements.chatMessagesWarning || !uiElements.chatInputWarning || !uiElements.sendWarningChatButton || !uiElements.chatbotPostInteractionLinks) {
+                console.warn("Elementos do chatbot de Sinais de Alerta não encontrados."); return;
+            }
+            uiElements.chatMessagesWarning.innerHTML = ''; 
+            warningChatHistory = []; 
+            uiElements.chatbotPostInteractionLinks.style.display = 'none'; 
 
-            const welcomeMessage = "Olá! Sou sua analista virtual. Estou aqui para ajudar a refletir sobre seu relacionamento com base em alguns sinais de alerta. Como posso ajudar você hoje?";
-            displayChatMessageWarning(welcomeMessage, 'bot'); 
-            warningChatHistory.push({ role: "model", parts: [{ text: welcomeMessage }] }); 
+            const welcomeMessage = "Olá! Sou sua analista virtual. Estou aqui para ajudar a refletir sobre seu relacionamento com base em alguns sinais de alerta. Como posso ajudar você hoje?";
+            displayChatMessageWarning(welcomeMessage, 'bot'); 
+            // Adiciona a mensagem de boas-vindas ao histórico para dar contexto ao modelo
+            warningChatHistory.push({ role: "model", parts: [{ text: welcomeMessage }] }); 
 
-            const newSendButton = uiElements.sendWarningChatButton.cloneNode(true);
-            uiElements.sendWarningChatButton.parentNode.replaceChild(newSendButton, uiElements.sendWarningChatButton);
-            uiElements.sendWarningChatButton = newSendButton; 
-            
-            const newChatInput = uiElements.chatInputWarning.cloneNode(true);
-            uiElements.chatInputWarning.parentNode.replaceChild(newChatInput, uiElements.chatInputWarning);
-            uiElements.chatInputWarning = newChatInput; 
-            
-            uiElements.sendWarningChatButton.addEventListener('click', handleSendWarningChatMessage);
-            uiElements.chatInputWarning.addEventListener('keypress', function(e) { if (e.key === 'Enter') { handleSendWarningChatMessage(); } });
-        }
+            // Recria os listeners para evitar duplicação
+            const newSendButton = uiElements.sendWarningChatButton.cloneNode(true);
+            uiElements.sendWarningChatButton.parentNode.replaceChild(newSendButton, uiElements.sendWarningChatButton);
+            uiElements.sendWarningChatButton = newSendButton; 
+            
+            const newChatInput = uiElements.chatInputWarning.cloneNode(true);
+            uiElements.chatInputWarning.parentNode.replaceChild(newChatInput, uiElements.chatInputWarning);
+            uiElements.chatInputWarning = newChatInput; 
+            
+            uiElements.sendWarningChatButton.addEventListener('click', handleSendWarningChatMessage);
+            uiElements.chatInputWarning.addEventListener('keypress', function(e) { if (e.key === 'Enter') { handleSendWarningChatMessage(); } });
+        }
 
-        /**
-         * Exibe uma mensagem na interface do chat de Sinais de Alerta.
-         */
-        function displayChatMessageWarning(message, sender, isLoading = false) {
-            if (!uiElements.chatMessagesWarning) return;
-            const messageElement = document.createElement('div');
-            messageElement.classList.add('chat-message', sender); 
-            if (isLoading) { 
-                messageElement.classList.add('loading');
-                messageElement.innerHTML = '<div class="dot-flashing"></div>';
-            } else {
-                messageElement.textContent = message; 
-            }
-            uiElements.chatMessagesWarning.appendChild(messageElement);
-            uiElements.chatMessagesWarning.scrollTop = uiElements.chatMessagesWarning.scrollHeight; 
-        }
+        /**
+         * Exibe uma mensagem na interface do chat de Sinais de Alerta.
+         */
+        function displayChatMessageWarning(message, sender, isLoading = false) {
+            if (!uiElements.chatMessagesWarning) return;
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('chat-message', sender); 
+            if (isLoading) { 
+                messageElement.classList.add('loading');
+                messageElement.innerHTML = '<div class="dot-flashing"></div>';
+            } else {
+                messageElement.textContent = message; 
+            }
+            uiElements.chatMessagesWarning.appendChild(messageElement);
+            uiElements.chatMessagesWarning.scrollTop = uiElements.chatMessagesWarning.scrollHeight; 
+        }
 
-        /**
-         * Manipula o envio de uma mensagem do usuário para o chatbot de Sinais de Alerta.
-         */
-        async function handleSendWarningChatMessage() {
-            if (!uiElements.chatInputWarning || !uiElements.chatMessagesWarning || !uiElements.chatbotPostInteractionLinks) return;
-            const userMessage = uiElements.chatInputWarning.value.trim();
-            if (userMessage === "") return; 
+        /**
+         * Manipula o envio de uma mensagem do usuário para o chatbot de Sinais de Alerta.
+         * CORRIGIDO: Usa a API Fetch para se comunicar com o Gemini.
+         */
+        async function handleSendWarningChatMessage() {
+            if (!uiElements.chatInputWarning || !uiElements.chatMessagesWarning) return;
+            const userMessage = uiElements.chatInputWarning.value.trim();
+            if (userMessage === "") return; 
 
-            displayChatMessageWarning(userMessage, 'user'); 
-            warningChatHistory.push({ role: "user", parts: [{ text: userMessage }] }); 
-            uiElements.chatInputWarning.value = ""; 
-            
-            uiElements.chatbotPostInteractionLinks.style.display = 'none'; 
-            displayChatMessageWarning('', 'bot', true); 
-            const loadingElement = uiElements.chatMessagesWarning.lastChild; 
+            displayChatMessageWarning(userMessage, 'user'); 
+            warningChatHistory.push({ role: "user", parts: [{ text: userMessage }] }); 
+            uiElements.chatInputWarning.value = ""; 
+            
+            if (uiElements.chatbotPostInteractionLinks) {
+                uiElements.chatbotPostInteractionLinks.style.display = 'none';
+            }
+            displayChatMessageWarning('', 'bot', true); 
+            const loadingElement = uiElements.chatMessagesWarning.lastChild; 
 
-            try {
-                const { GoogleGenAI } = await import('@google/genai');
-                // IMPORTANT: In a real application, the API key should be managed securely,
-                // e.g., through environment variables or a backend proxy.
-                // It's hardcoded here for brevity in this example.
-                // Replace "YOUR_GEMINI_API_KEY_HERE" with your actual API key.
-                const apiKey = process.env.API_KEY || "YOUR_GEMINI_API_KEY_HERE"; 
-                
-                if (apiKey === "YOUR_GEMINI_API_KEY_HERE" || !apiKey) {
-                     if (loadingElement) loadingElement.remove();
-                    displayChatMessageWarning("A API Key do Gemini não foi configurada. Por favor, adicione sua chave para usar o chatbot.", 'bot');
-                     if (uiElements.chatbotPostInteractionLinks) {
-                        uiElements.chatbotPostInteractionLinks.style.display = 'block'; // Still show links
-                    }
-                    console.error("Gemini API Key is not configured.");
-                    return;
-                }
+            // O prompt do sistema define a persona e as regras do bot
+            const systemPrompt = {
+                role: "user",
+                parts: [{ text: SINAIS_DE_ALERTA_TEXTO }]
+            };
 
-                const ai = new GoogleGenAI({apiKey}); // Use the imported GoogleGenAI
+            // O histórico enviado para a API inclui o prompt do sistema para manter o contexto
+            const historyForAPI = [systemPrompt, ...warningChatHistory];
 
-                const response = await ai.models.generateContent({
-                    model: "gemini-2.5-flash-preview-04-17", // Updated model name
-                    contents: [ 
-                        { role: "user", parts: [{ text: SINAIS_DE_ALERTA_TEXTO }] }, 
-                        ...warningChatHistory 
-                    ],
-                    // Optional: Add config for thinking or other parameters if needed
-                    // config: { thinkingConfig: { thinkingBudget: 0 } } // Example: Disable thinking for low latency
-                });
-                
-                let botResponse = "Desculpe, não consegui processar sua mensagem no momento."; 
-                botResponse = response.text; // Directly access .text for the response
-                
-                if (loadingElement) loadingElement.remove(); 
-                displayChatMessageWarning(botResponse, 'bot'); 
-                warningChatHistory.push({ role: "model", parts: [{ text: botResponse }] }); 
-                
-                if (uiElements.chatbotPostInteractionLinks) {
-                    uiElements.chatbotPostInteractionLinks.style.display = 'block';
-                }
+            const payload = {
+                contents: historyForAPI
+            };
 
-            } catch (error) {
-                console.error("Erro ao enviar mensagem para API Gemini:", error);
-                if (loadingElement) loadingElement.remove();
-                displayChatMessageWarning("Desculpe, ocorreu um erro ao tentar obter uma resposta. Por favor, tente novamente mais tarde.", 'bot');
-                if (uiElements.chatbotPostInteractionLinks) {
-                    uiElements.chatbotPostInteractionLinks.style.display = 'block';
-                }
-            }
-        }
+            // A chave da API é deixada em branco para ser injetada pelo ambiente
+            const apiKey = "AIzaSyByPohV8gRrDYwFQiSKSd6kWCHAMH9TOH4";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    const errorDetails = await response.text();
+                    console.error("API Error:", response.status, errorDetails);
+                    throw new Error(`API request failed with status ${response.status}`);
+                }
+
+                const result = await response.json();
+                let botResponse = "Desculpe, não consegui processar sua mensagem no momento.";
+
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    botResponse = result.candidates[0].content.parts[0].text;
+                } else {
+                    console.warn("A resposta da API não continha o conteúdo esperado.", result);
+                    if (result.promptFeedback && result.promptFeedback.blockReason) {
+                        botResponse = `Não foi possível gerar uma resposta devido a: ${result.promptFeedback.blockReason}. Por favor, reformule sua pergunta.`;
+                    }
+                }
+
+                if (loadingElement) loadingElement.remove();
+                displayChatMessageWarning(botResponse, 'bot');
+                warningChatHistory.push({ role: "model", parts: [{ text: botResponse }] });
+                
+                if (uiElements.chatbotPostInteractionLinks) {
+                    uiElements.chatbotPostInteractionLinks.style.display = 'block';
+                }
+
+            } catch (error) {
+                console.error("Erro ao enviar mensagem para API Gemini:", error);
+                if (loadingElement) loadingElement.remove();
+                displayChatMessageWarning("Desculpe, ocorreu um erro ao tentar obter uma resposta. Por favor, tente novamente mais tarde.", 'bot');
+                if (uiElements.chatbotPostInteractionLinks) {
+                    uiElements.chatbotPostInteractionLinks.style.display = 'block';
+                }
+            }
+        }
+
 
         /* Marcador: Funções do Chat da Comunidade */
 
