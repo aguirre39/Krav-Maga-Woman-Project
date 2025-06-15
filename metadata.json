@@ -1,0 +1,9 @@
+
+{
+  "name": "Krav Maga Woman Security Features",
+  "description": "Aplicativo com funcionalidades de segurança, incluindo Botão de Emergência, Acompanhamento Seguro e Gravação de Áudio Ambiente.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
